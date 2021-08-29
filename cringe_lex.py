@@ -97,6 +97,16 @@ class CringeLexer:
                 self.numChar = self.put_char_back(self.numChar)
             self.lexeme = ''
             self.state = self.states['initial'][0]
+        elif self.state in self.states['double_operators']:
+            if self.state in self.states['double_operators']:
+                self.lexeme += self.char
+            token = self.get_token(self.state, self.lexeme)
+            print('{0:<3d} {1:<10s} {2:<10s} '.format(self.numLine, self.lexeme, token))
+            self.tableOfSymb[len(self.tableOfSymb) + 1] = (self.numLine, self.lexeme, token, '')
+            if self.state in self.states['star']:
+                self.numChar = self.put_char_back(self.numChar)
+            self.lexeme = ''
+            self.state = self.states['initial'][0]
         elif self.state in self.states['error']:
             self.fail()
 

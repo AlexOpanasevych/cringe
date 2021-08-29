@@ -3,10 +3,10 @@ tableOfLanguageTokens = {'program': 'keyword', 'if': 'keyword', 'then': 'keyword
                          '/': 'mult_op',  # 'e': 'mult_op',
                          '(': 'par_op', ')': 'par_op', '{': 'start_block',
                          '}': 'end_block', 'by': 'keyword', ',': 'punct', '||': 'bool_op', '&&': 'bool_op',
-                         'true': 'bool', 'false': 'bool', ';': 'op_end', ':': 'punct', '<': 'rel_op', '>': 'rel_op',
+                         'true': 'boolean', 'false': 'boolean', ';': 'op_end', ':': 'punct', '<': 'rel_op', '>': 'rel_op',
                          '>=': 'rel_op', '<=': 'rel_op', '==': 'rel_op', '^': 'pow_op', '\n\r': 'eol', '\r\n': 'eol',
                          'while': 'keyword', 'do': 'keyword', 'for': 'keyword', 'scan': 'keyword', 'print': 'keyword',
-                         'boolean': 'keyword', 'real': 'keyword', 'integer': 'keyword', '!=': 'rel_op'
+                         'boolean': 'keyword', 'real': 'keyword', 'integer': 'keyword', '!=': 'rel_op',
                          }
 
 tableIdentFloatInt = {2: 'ident', 4: 'integer', 6: 'real', 15: 'real'}
@@ -16,7 +16,7 @@ classes = {
     'Dot': '.',
     'WhiteSpace': ' \t',
     'EndOfLine': '\n\r',
-    'Operators': '+-*/^(){}:;=<>!,',
+    'Operators': '+-*/^(){}:;=<>!,&|',
     'ScientificNotation': 'e',
     'Letter': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_',
 }
@@ -30,19 +30,23 @@ stf = {
     (0, '='): 9, (0, '<'): 9, (0, '>'): 9, (9, '='): 10, (9, 'other'): 11,  # relative ops and is
     (0, '+'): 13, (0, '-'): 13, (0, '*'): 13, (0, '/'): 13, (0, '^'): 13,  # (0, 'e'): 13,  # Operators
     (0, '('): 13, (0, ')'): 13, (0, '{'): 13, (0, '}'): 13, (0, ':'): 13, (0, ';'): 13, (0, ','): 13,  # Operators
+    (0, '&'): 16, (16, '&'): 17,
+    (0, '|'): 18, (18, '|'): 19,
     (0, 'EndOfLine'): 12,  # EndOfLine
     (0, 'other'): 101,  # error
+    (16, 'other'): 103,
+    (18, 'other'): 104,
     (3, 'ScientificNotation'): 14, (14, 'Digit'): 14, (14, 'other'): 15, (5, 'ScientificNotation'): 14
 }
 
 states = {
     'initial': (0,),
     'star': (2, 4, 6, 11, 15),
-    'error': (101, 102),
-    'final': (2, 4, 6, 8, 10, 11, 12, 13, 15, 101, 102),
+    'error': (101, 102, 103, 104),
+    'final': (2, 4, 6, 8, 10, 11, 12, 13, 15, 101, 102, 103, 104, 17, 19),
     'endOfLine': (12,),
     'operators': (8, 10, 11, 13),
-    'double_operators': (8, 10),
+    'double_operators': (8, 10, 17, 19),
     'const': (4, 6, 15),
     'identifier': (2,)
 }
@@ -50,4 +54,6 @@ states = {
 errorsDescription = {
     101: "CringeLexerError: у рядку %s нерозпізнаний символ %s",
     102: "CringeLexerError: у рядку %s очікувався символ '=', а не %s",
+    103: "CringeLexerError: у рядку %s очікувався символ '&', а не %s",
+    104: "CringeLexerError: у рядку %s очікувався символ '|', а не %s",
 }

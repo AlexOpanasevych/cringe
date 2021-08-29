@@ -103,6 +103,16 @@ class CringeLexer:
                 self.numChar = self.put_char_back(self.numChar)
             self.lexeme = ''
             self.state = self.states['initial'][0]
+        elif self.state in self.states['double_operators']:
+            if self.state in self.states['double_operators']:
+                self.lexeme += self.char
+            token = self.get_token(self.state, self.lexeme)
+            # print('{0:<3d} {1:<10s} {2:<10s} '.format(self.numLine, self.lexeme, token))
+            self.tableOfSymb[len(self.tableOfSymb) + 1] = (self.numLine, self.lexeme, token, '')
+            if self.state in self.states['star']:
+                self.numChar = self.put_char_back(self.numChar)
+            self.lexeme = ''
+            self.state = self.states['initial'][0]
         elif self.state in self.states['error']:
             self.fail()
 
@@ -143,12 +153,18 @@ class CringeLexer:
         if self.state == 102:
             print('Lexer: у рядку ', self.numLine, ' очікувався символ =, а не ' + self.char)
             exit(102)
+        if self.state == 103:
+            print('Lexer: у рядку ', self.numLine, ' очікувався символ &, а не ' + self.char)
+            exit(103)
+        if self.state == 104:
+            print('Lexer: у рядку ', self.numLine, ' очікувався символ &, а не ' + self.char)
+            exit(104)
 
     def is_initial_state(self, state):
-        return state in self.states["initial"]
+        return state in self.states['initial']
 
     def is_final_state(self, state):
-        return state in self.states["final"]
+        return state in self.states['final']
 
     def next_state(self, state, class_ch):
         result = None
@@ -225,7 +241,7 @@ class CringeLexer:
         print('{0:^15s} | {1:^8s}'.format('Назва', 'Індекс'))
         print(*('-' for _ in range(13)))
         for value in self.tableOfId.items():
-            print('{0:^15s} | {1:^8d}'.format(*value))
+            print('{0:^15s} | {1}'.format(*value))
         print(*('-' for _ in range(13)))
 
     def print_const_table(self):
@@ -234,5 +250,5 @@ class CringeLexer:
         print('{0:^15s} | {1:^8s}'.format('Константа', 'Індекс'))
         print(*('-' for _ in range(13)))
         for value in self.tableOfConst.items():
-            print('{0:^15s} | {1:^8d}'.format(*value))
+            print('{0:^15s} | {1}'.format(*value))
         print(*('-' for _ in range(13)))

@@ -14,18 +14,15 @@ if __name__ == '__main__':
         lexer.print_ids_table()
         lexer.print_const_table()
 
-        parser = CringeParser(lexer.tableOfSymb)
-        parser.parse_program()
-        pprint.pprint(parser.postfix_notation)
+        if lexer.f_success:
+            parser = CringeParser(lexer.tableOfSymb, lexer.tableOfConst)
+            parser.parse_program()
+            pprint.pprint(parser.postfix_notation)
 
-        translator = CringeInterpreter(parser.postfix_notation, lexer.tableOfId, lexer.tableOfConst)
-        translator.interpret()
-        if translator.success:
-            print(translator.ident_table)
-            print(translator.const_table)
-
-
-
-
-
+            if parser.f_success:
+                translator = CringeInterpreter(parser.postfix_notation, lexer.tableOfId, lexer.tableOfConst)
+                translator.interpret()
+                if translator.success:
+                    print(translator.ident_table)
+                    print(translator.const_table)
 
